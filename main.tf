@@ -12,6 +12,17 @@ resource "aws_instance" "this" {
     volume_size = 1000
     iops        = 800
   }
+  monitoring           = true
+  iam_instance_profile = "<valid_iam_role>"
+
+  metadata_options {
+    http_endpoint = "disabled"
+    http_tokens   = "required"
+  }
+
+  tags {
+    Name = "<instance_name>"
+  }
 }
 
 resource "aws_lambda_function" "this" {
@@ -20,4 +31,21 @@ resource "aws_lambda_function" "this" {
   handler       = "exports.test"
   runtime       = "nodejs12.x"
   memory_size   = 1024
+
+  vpc_config {
+    security_group_ids = ["<valid_security_group_ids>"]
+    subnet_ids         = ["<valid_subnet_ids>"]
+  }
+
+  tracing_config {
+    mode = "Active"
+  }
+}
+
+resource "aws_vpc" "<resource_name>" {
+  cidr_block = "<cidr>"
+
+  tags = {
+    Name = "main"
+  }
 }
