@@ -12,6 +12,11 @@ resource "aws_instance" "this" {
     volume_size = 1000
     iops        = 800
   }
+
+  metadata_options {
+    http_endpoint = "disabled"
+    http_tokens   = "required"
+  }
 }
 
 resource "aws_lambda_function" "this" {
